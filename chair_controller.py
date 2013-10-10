@@ -32,8 +32,8 @@ class ChairControl_Xbox(object):
     def convertValueX(self, OldValue):
 	OldMax = 1
 	OldMin = -1
-	NewMax = 178
-	NewMin = 118
+	NewMax = 168
+	NewMin = 128
 
 	OldRange = (OldMax - OldMin)
 	NewRange = (NewMax - NewMin)
@@ -43,8 +43,8 @@ class ChairControl_Xbox(object):
     def convertValueY(self, OldValue):
 	OldMax = -1
 	OldMin = 1
-	NewMax = 208
-	NewMin = 138
+	NewMax = 216
+	NewMin = 136
 
 	OldRange = (OldMax - OldMin)
 	NewRange = (NewMax - NewMin)
@@ -95,13 +95,13 @@ class ChairControl_Xbox(object):
                 for thing in event.get():
                     if thing.type == 7:
 #                        print thing.dict['joy'], thing.dict['axis'], thing.dict['value'], 
-                        print thing.dict['value']
-                        if -0.3 < thing.dict['value'] < 0.3:
-                            spi.transfer((0x00, 0,0,0))
-#                            spi.transfer((0x01, 1,7,6))
-                        else:
-                            if thing.dict['axis'] == 0:
 
+                        #Joystick 1 (left)
+                        if thing.dict['axis'] == 0: 
+                            #deadzoning
+                            if -0.25 < float(thing.dict['value']) < 0.25:
+                                spi.transfer((0x00, 0,0,0))
+                            else:
                                 xNewVal = self.convertValueX(thing.dict['value'])
                                 try:
                                     a = int(str(xNewVal)[0])
@@ -109,19 +109,21 @@ class ChairControl_Xbox(object):
                                     c = int(str(xNewVal)[2])
                                     print "X: ",a,b,c
                                     spi.transfer((0x02, a,b,c))
-                            #                                time.sleep(0.01)
                                 except Exception, e:
                                     print e
 
                             if thing.dict['axis'] == 1:
-                                yNewVal = self.convertValueY(thing.dict['value'])
-                                try:
-                                    a = int(str(yNewVal)[0])
-                                    b = int(str(yNewVal)[1])
-                                    c = int(str(yNewVal)[2])
-                                    print "Y: ",a,b,c
-                                    spi.transfer((0x01, a,b,c))
-                            #                                time.sleep(0.01)
+                                #deadzoning
+                                if -0.3 < float(thing.dict['value']) < 0.3:
+                                    spi.transfer((0x00, 0,0,0))
+                                else:
+                                    yNewVal = self.convertValueY(thing.dict['value'])
+                                    try:
+                                        a = int(str(yNewVal)[0])
+                                        b = int(str(yNewVal)[1])
+                                        c = int(str(yNewVal)[2])
+                                        print "Y: ",a,b,c
+                                        spi.transfer((0x01, a,b,c))
                                 except Exception, e:
                                     print e
                         print
