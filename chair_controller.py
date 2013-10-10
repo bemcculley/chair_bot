@@ -1,13 +1,6 @@
 '''
 @author: Brian McCulley
 
-Based off code from 
-
-Garrett Owen
-
-and
-
-http://iamtherockstar.com/archive/making-hid-devices-easier-using-pygame-joysticks/
 '''
 
 #import serial
