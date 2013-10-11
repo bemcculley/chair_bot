@@ -98,32 +98,24 @@ class ChairControl_Xbox(object):
 
                         #Joystick 1 (left)
                         if thing.dict['axis'] == 0: 
-                            #deadzoning
-                            if -0.25 < float(thing.dict['value']) < 0.25:
-                                spi.transfer((0x00, 0,0,0))
-                            else:
-                                xNewVal = self.convertValueX(thing.dict['value'])
-                                try:
-                                    a = int(str(xNewVal)[0])
-                                    b = int(str(xNewVal)[1])
-                                    c = int(str(xNewVal)[2])
-                                    print "X: ",a,b,c
-                                    spi.transfer((0x02, a,b,c))
-                                except Exception, e:
-                                    print e
+                            xNewVal = self.convertValueX(thing.dict['value'])
+                            try:
+                                a = int(str(xNewVal)[0])
+                                b = int(str(xNewVal)[1])
+                                c = int(str(xNewVal)[2])
+                                print "X: ",a,b,c
+                                spi.transfer((0x02, a,b,c))
+                            except Exception, e:
+                                print e
 
                             if thing.dict['axis'] == 1:
-                                #deadzoning
-                                if -0.3 < float(thing.dict['value']) < 0.3:
-                                    spi.transfer((0x00, 0,0,0))
-                                else:
-                                    yNewVal = self.convertValueY(thing.dict['value'])
-                                    try:
-                                        a = int(str(yNewVal)[0])
-                                        b = int(str(yNewVal)[1])
-                                        c = int(str(yNewVal)[2])
-                                        print "Y: ",a,b,c
-                                        spi.transfer((0x01, a,b,c))
+                                yNewVal = self.convertValueY(thing.dict['value'])
+                                try:
+                                    a = int(str(yNewVal)[0])
+                                    b = int(str(yNewVal)[1])
+                                    c = int(str(yNewVal)[2])
+                                    print "Y: ",a,b,c
+                                    spi.transfer((0x01, a,b,c))
                                 except Exception, e:
                                     print e
                         print
