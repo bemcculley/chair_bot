@@ -1,13 +1,5 @@
 '''
-basic_control.py
-@author: Garrett Owen
-@date: January 26, 2012
-
-Based off code from 
-
-http://iamtherockstar.com/archive/making-hid-devices-easier-using-pygame-joysticks/
-
-adapted by Brian McCulley
+@author: Brian McCulley
 
 '''
 
