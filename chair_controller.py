@@ -100,16 +100,16 @@ class ChairControl_Xbox(object):
                             except Exception, e:
                                 print e
 
-                            if thing.dict['axis'] == 1:
-                                yNewVal = self.convertValueY(thing.dict['value'])
-                                try:
-                                    a = int(str(yNewVal)[0])
-                                    b = int(str(yNewVal)[1])
-                                    c = int(str(yNewVal)[2])
-                                    print "Y: ",a,b,c
-                                    spi.transfer((0x01, a,b,c))
-                                except Exception, e:
-                                    print e
+                        if thing.dict['axis'] == 1:
+                            yNewVal = self.convertValueY(thing.dict['value'])
+                            try:
+                                a = int(str(yNewVal)[0])
+                                b = int(str(yNewVal)[1])
+                                c = int(str(yNewVal)[2])
+                                print "Y: ",a,b,c
+                                spi.transfer((0x01, a,b,c))
+                            except Exception, e:
+                                print e
                         print
                     
                     #Mappings for xbox buttons, trigger on depress
