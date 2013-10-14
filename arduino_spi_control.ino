@@ -101,6 +101,13 @@ void loop(){
       Serial.print(pinval);
       analogWrite(6, pinval);
     }
+    else if(buf[0] == 6){
+      Serial.print("Off");
+      Serial.print(pinval);
+      analogWrite(3, o);
+      analogWrite(5, 0);
+      analogWrite(6, 0);
+    }
     else {
         analogWrite(10, 148);
         analogWrite(11, 176);
