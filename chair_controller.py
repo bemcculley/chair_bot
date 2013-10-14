@@ -18,7 +18,7 @@ class ChairControl_Xbox(object):
         self.xPin = 10
         self.yPin = 11
 
-        spi.openSPI(speed=1000000, mode=0)
+        spi.openSPI(speed=4000000, mode=0)
 
 
     def convertValueX(self, OldValue):
