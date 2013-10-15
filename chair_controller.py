@@ -3,135 +3,77 @@
 
 '''
 
-#import serial
-import pygame
 import time
 
 import spi
 
 
-class ChairControl_Xbox(object):
+class HardwareControl(object):
     def __init__(self):
         self.xDefault = 148
         self.yDefault = 176 
         
-        self.xPin = 10
-        self.yPin = 11
+        self.xMin = 128
+        self.xMax = 168
+        self.yMin = 136
+        self.yMax = 216
 
-        spi.openSPI(speed=1000000, mode=0)
+        #defaults
+        self.devMaxX = 255
+        self.devMinX = 0
+        self.devMaxY = 255
+        self.devMinY = 0
+
+        #Arduino default speed
+        spi.openSPI(speed=4000000, mode=0)
 
 
-    def convertValueX(self, OldValue):
-	OldMax = 1
-	OldMin = -1
-	NewMax = 168
-	NewMin = 128
-
-	OldRange = (OldMax - OldMin)
-	NewRange = (NewMax - NewMin)
-	NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin
+    def __convertValueX(self, OldValue):
+	OldRange = (self.devMaxX - self.devMinX)
+	NewRange = (self.xMax - self.xMin)
+	NewValue = (((OldValue - self.devMinX) * NewRange) / OldRange) + self.xMin
 	return NewValue
 
-    def convertValueY(self, OldValue):
-	OldMax = -1
-	OldMin = 1
-	NewMax = 216
-	NewMin = 136
-
-	OldRange = (OldMax - OldMin)
-	NewRange = (NewMax - NewMin)
-	NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin
-
-	return NewValue
-
-    def convertValuePWM(self, OldValue):
-
-	OldMax = 32768
-	OldMin = -32768
-	NewMax = 255
-	NewMin = 0
-
-	OldRange = (OldMax - OldMin)
-	NewRange = (NewMax - NewMin)
-	NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin
-
+    def __convertValueY(self, OldValue):
+	OldRange = (self.devMaxY - self.devMinY)
+	NewRange = (self.yMax - self.yMin)
+	NewValue = (((OldValue - self.devMinY) * NewRange) / OldRange) + self.yMin
 	return NewValue
 
 
-
-
-
-
-
-    def joystickHandler(self):
-        '''
-        Gets joystick data and prints it
-        '''
-
-        a = 0
-        b = 0
-        c = 0
-        pygame.init()
-        j = pygame.joystick.Joystick(0)
-        j.init()
-        print 'Initialized Joystick : %s' % j.get_name()
-
-        # Keeps a history of buttons pressed so that one press does
-        # not send multiple presses to the Arduino Board
-        button_history = [0,0,0,0,0,0,0,0,0,0,0,0]
-    
+    def __getBits(self, bitstring):
         try:
-            while True:
-                pygame.event.pump()
-                event = pygame.event
-                for thing in event.get():
-                    if thing.type == 7:
-#                        print thing.dict['joy'], thing.dict['axis'], thing.dict['value'], 
+            a = int(str(bitstring)[0])
+            b = int(str(bitstring)[1])
+            c = int(str(bitstring)[2])
+        except Exception, e:
+            print "Need numeric bits"
+        return a, b, c
+        
 
-                        #Joystick 1 (left)
-                        if thing.dict['axis'] == 0: 
-                            xNewVal = self.convertValueX(thing.dict['value'])
-                            try:
-                                a = int(str(xNewVal)[0])
-                                b = int(str(xNewVal)[1])
-                                c = int(str(xNewVal)[2])
-                                print "X: ",a,b,c
-                                spi.transfer((0x02, a,b,c))
-                            except Exception, e:
-                                print e
 
-                            if thing.dict['axis'] == 1:
-                                yNewVal = self.convertValueY(thing.dict['value'])
-                                try:
-                                    a = int(str(yNewVal)[0])
-                                    b = int(str(yNewVal)[1])
-                                    c = int(str(yNewVal)[2])
-                                    print "Y: ",a,b,c
-                                    spi.transfer((0x01, a,b,c))
-                                except Exception, e:
-                                    print e
-                        print
-                    
-                    #Mappings for xbox buttons, trigger on depress
-                    # 0 = A, 1 = B, 2 = Y, 3 = X
-                    if thing.type == 10:
-                        if thing.dict['button'] == 0:
-                            spi.transfer((0x05, 2,5,5))
-                        if thing.dict['button'] == 1:
-                            spi.transfer((0x03, 2,5,5))
-                        if thing.dict['button'] == 3:
-                            spi.transfer((0x06, 0,0,0))
-                        if thing.dict['button'] == 2:
-                            spi.transfer((0x04, 2,5,5))
+    def drive(self, dev, value):
+        if self.devMaxX or self.devMinX or self.devMaxY or self.devMinY is None:
+            raise Exception("Must override X min and max values")
+        try:
+            try:
+                dev = int(dev)
+            except ValueError,e:
+                print "need numeric device ID"
 
-                        print 'Button: %s pressed' % thing.dict['button']
-                        print
-                    if thing.type == 11:
-                        print 'Button: %s released' % thing.dict['button']
-                        print
+            if dev == 1:
+                newVal = self.__convertValueX(value)
+            if dev == 2:
+                newVal = self.__convertValueY(value)
+            else:
+                newVal = value
+            spi.transfer((dev, self.__getBits(newVal)))
 
-        except KeyboardInterrupt:
+        except Exception, e:
+            spi.transfer((0x00, 0, 0, 0))
+            print 'Shutting Down'
             j.quit()
-            spi.closeSPI()
+            spi.closeSPI()            
 
-ChairControl_Xbox().joystickHandler()
+
+
