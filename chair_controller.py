@@ -3,6 +3,8 @@
 
 '''
 
+#import serial
+import pygame
 import time
 
 import spi
@@ -18,14 +20,12 @@ class HardwareControl(object):
         self.yMin = 136
         self.yMax = 216
 
-        #defaults
-        self.devMaxX = 255
-        self.devMinX = 0
-        self.devMaxY = 255
-        self.devMinY = 0
+        self.devMaxX = None
+        self.devMinX = None
+        self.devMaxY = None
+        self.devMinY = None
 
-        #Arduino default speed
-        spi.openSPI(speed=4000000, mode=0)
+        spi.openSPI(speed=1000000, mode=0)
 
 
     def __convertValueX(self, OldValue):
@@ -74,6 +74,4 @@ class HardwareControl(object):
             print 'Shutting Down'
             j.quit()
             spi.closeSPI()            
-
-
 
