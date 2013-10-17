@@ -12,3 +12,4 @@ hostapd
 (for xbox controller)
 xboxdrv
 
+Thanks to Louis Thiery and Connor Wolf for their python / c SPI adaptor.
