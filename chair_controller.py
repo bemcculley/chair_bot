@@ -17,8 +17,8 @@ class HardwareControl(object):
         
         self.xMin = 128
         self.xMax = 168
-        self.yMin = 136
-        self.yMax = 216
+        self.yMin = 146
+        self.yMax = 206
 
         self.devMaxX = devMaxX
         self.devMinX = devMinX
@@ -30,12 +30,14 @@ class HardwareControl(object):
 
 
     def __convertValueX(self, OldValue):
+        print "convert X"
 	OldRange = (self.devMaxX - self.devMinX)
 	NewRange = (self.xMax - self.xMin)
 	NewValue = (((OldValue - self.devMinX) * NewRange) / OldRange) + self.xMin
 	return int(NewValue)
 
     def __convertValueY(self, OldValue):
+        print "convert Y"
 	OldRange = (self.devMaxY - self.devMinY)
 	NewRange = (self.yMax - self.yMin)
 	NewValue = (((OldValue - self.devMinY) * NewRange) / OldRange) + self.yMin
@@ -43,10 +45,12 @@ class HardwareControl(object):
 
 
     def __getBits(self, bitstring):
+        bitstring = str(bitstring).zfill(3)
+        print 'bitstring', bitstring
         try:
-            a = int(str(bitstring)[0])
-            b = int(str(bitstring)[1])
-            c = int(str(bitstring)[2])
+            a = int(bitstring[0])
+            b = int(bitstring[1])
+            c = int(bitstring[2])
         except Exception, e:
             print "Need numeric bits"
             print 'bitstring', bitstring
@@ -61,19 +65,20 @@ class HardwareControl(object):
         try:
             try:
                 dev = int(dev)
+                value = int(value)
             except ValueError,e:
-                print "need numeric device ID"
+                print "need numeric device ID or value"
 
             newVal = value
-            if dev == 0:
-                newVal = self.__convertValueX(value)
             if dev == 1:
                 newVal = self.__convertValueY(value)
+            if dev == 2:
+                newVal = self.__convertValueX(value)
 
         except Exception, e:
             print dev, value, newVal
 #            spi.transfer((0x00, 0, 0, 0))
-            print 'Shutting Down'
+            print 'Shutting Down', e
             spi.closeSPI()
             sys.exit(1)
 

@@ -28,12 +28,12 @@ class XboxHandler(object):
                             #Joystick 1 (left)
                             if thing.dict['axis'] == 0: 
                                 #Y Axis?
-                                self.control.drive(thing.dict['axis'], thing.dict['value'])
+                                self.control.drive(2, thing.dict['value'])
                         
                             if thing.dict['axis'] == 1:
                                 #X Axis?
                                 
-                                self.control.drive(thing.dict['axis'], thing.dict['value'])
+                                self.control.drive(1, thing.dict['value'])
                         except Exception, e:
                             print e
                         print
