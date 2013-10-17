@@ -73,6 +73,15 @@ void loop(){
       pinval += buf[2] * 10;
       pinval += buf[3];
 
+
+    if(buf[0] == 0) {
+      Serial.print("STOP");
+    //  Serial.print(String(buf[1]));
+      Serial.println(pinval);
+      analogWrite(10, 148);
+      analogWrite(11, 176);
+    }
+    
     if(buf[0] == 2) {
       Serial.print("X");
     //  Serial.print(String(buf[1]));
@@ -104,7 +113,7 @@ void loop(){
     else if(buf[0] == 6){
       Serial.print("Off");
       Serial.print(pinval);
-      analogWrite(3, o);
+      analogWrite(3, 0);
       analogWrite(5, 0);
       analogWrite(6, 0);
     }
