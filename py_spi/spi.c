@@ -37,7 +37,7 @@ static void pabort(const char *s)
 static const char *device = "/dev/spidev0.1";
 static uint8_t mode;
 static uint8_t bits = 8;
-static uint32_t speed = 500000;
+static uint32_t speed = 1000000;
 static uint16_t delay;
 
 int ret = 0;
@@ -66,7 +66,7 @@ static PyObject* openSPI(PyObject *self, PyObject *args, PyObject *kwargs)
 
 	PyErr_Clear();
 
-	// printf("Mode: %i, Bits: %i, Speed: %i, Delay: %i\n", mode, bits, speed, delay);
+	printf("Mode: %i, Bits: %i, Speed: %i, Delay: %i\n", mode, bits, speed, delay);
 
 
 
