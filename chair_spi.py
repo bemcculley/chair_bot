@@ -96,8 +96,9 @@ class ChairControl_Xbox(object):
                     if thing.type == 7:
 #                        print thing.dict['joy'], thing.dict['axis'], thing.dict['value'], 
                         print thing.dict['value']
-                        if -0.3 < thing.dict['value'] < 0.3:
-                            spi.transfer((0x00, 0,0,0))
+                        if False:
+                            pass
+#                            spi.transfer((0x00, 0,0,0))
 #                            spi.transfer((0x01, 1,7,6))
                         else:
                             if thing.dict['axis'] == 0:
@@ -108,7 +109,7 @@ class ChairControl_Xbox(object):
                                     b = int(str(xNewVal)[1])
                                     c = int(str(xNewVal)[2])
                                     print "X: ",a,b,c
-                                    spi.transfer((0x02, a,b,c))
+                                    print spi.transfer((0x02, a,b,c))
                             #                                time.sleep(0.01)
                                 except Exception, e:
                                     print e
@@ -120,7 +121,7 @@ class ChairControl_Xbox(object):
                                     b = int(str(yNewVal)[1])
                                     c = int(str(yNewVal)[2])
                                     print "Y: ",a,b,c
-                                    spi.transfer((0x01, a,b,c))
+                                    print spi.transfer((0x01, a,b,c))
                             #                                time.sleep(0.01)
                                 except Exception, e:
                                     print e
