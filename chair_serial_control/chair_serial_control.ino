@@ -13,7 +13,7 @@ int cmd = 0;
 
 void setup(){
   //  TCCR1B = TCCR1B & 0b11111000 | 0x01;
-  Serial.begin(9600);
+  Serial.begin(57600);
   //enable slave mode
   pinMode(3, OUTPUT);
   pinMode(5, OUTPUT);
@@ -24,8 +24,6 @@ void setup(){
   pinMode(4, OUTPUT);
   //  SPCR |= _BV(SPE);
 
-  //initialize buffer
-  pos = 0;
 
   analogWrite(10, 148);
   analogWrite(11, 176);
@@ -50,9 +48,9 @@ void setup(){
 
 void loop(){
   cmd = 0;
-  cmdstr = '';
+  cmdstr = "";
   val = 0;
-  valstr = ''
+  valstr = "";
   while (Serial.available() > 0){
     
     char c = Serial.read();
@@ -70,7 +68,7 @@ void loop(){
     Serial.println(val);
 
     if(cmd == 0) {
-      Serial.print("STOP");
+      Serial.println("STOP");
       //  Serial.print(String(buf[1]));
       Serial.println(val);
       analogWrite(10, 148);
@@ -78,36 +76,36 @@ void loop(){
     }
     
     else if(cmd == 2) {
-      Serial.print("X");
+      Serial.println("X");
 	//  Serial.print(String(buf[1]));
       Serial.println(val);
       analogWrite(10, val);
     }
       
     else if(cmd ==1){
-      Serial.print("Y");
+      Serial.println("Y");
       //  Serial.print(String(buf[1]));
       Serial.println(val);
       analogWrite(11, val);
     }
     else if(cmd == 3){
-      Serial.print("A button");
-      Serial.print(val);
+      Serial.println("A button");
+      Serial.println(val);
       analogWrite(3, val);
     }
     else if(cmd == 4){
       Serial.println("X button");
-      Serial.print(val);
+      Serial.println(val);
       analogWrite(5, val);
     }
     else if(cmd == 5){
-      Serial.print("B button");
-      Serial.print(val);
+      Serial.println("B button");
+      Serial.println(val);
       analogWrite(6, val);
     }
     else if(cmd == 6){
-      Serial.print("Off");
-      Serial.print(val);
+      Serial.println("Off");
+      Serial.println(val);
       analogWrite(3, 0);
       analogWrite(5, 0);
       analogWrite(6, 0);
@@ -118,7 +116,7 @@ void loop(){
     }
     
     Serial.println();
-    readString='';
+    readString="";
   }
 }
 
