@@ -76,19 +76,20 @@ void loop(){
       analogWrite(11, 176);
     }
     
-    else if(cmd == 2) {
-      Serial1.println("X");
-	//  Serial1.print(String(buf[1]));
-      Serial1.println(val);
-      analogWrite(10, val);
-    }
-      
     else if(cmd ==1){
       Serial1.println("Y");
       //  Serial1.print(String(buf[1]));
       Serial1.println(val);
       analogWrite(11, val);
     }
+
+    else if(cmd == 2) {
+      Serial1.println("X");
+	//  Serial1.print(String(buf[1]));
+      Serial1.println(val);
+      analogWrite(10, val);
+    }
+
     else if(cmd == 3){
       Serial1.println("A button");
       Serial1.println(val);
@@ -104,6 +105,7 @@ void loop(){
       Serial1.println(val);
       analogWrite(6, val);
     }
+
     else if(cmd == 6){
       Serial1.println("Off");
       Serial1.println(val);
@@ -111,6 +113,17 @@ void loop(){
       analogWrite(5, 0);
       analogWrite(6, 0);
     }
+
+    else if(cmd == 7){
+      Serial1.println(val);
+      analogWrite(9, val);
+    }
+
+    else if(cmd == 8){
+      Serial1.println(val);
+      analogWrite(13, val);
+    }
+
     else {
       analogWrite(10, 148);
       analogWrite(11, 176);
