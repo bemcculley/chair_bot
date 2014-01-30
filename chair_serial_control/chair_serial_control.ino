@@ -5,6 +5,7 @@
 //char buf[100];
 String readString;
 String cmdstr;
+
 String valstr;
 
 int val= 0;
@@ -13,7 +14,7 @@ int cmd = 0;
 
 void setup(){
   //  TCCR1B = TCCR1B & 0b11111000 | 0x01;
-  Serial.begin(57600);
+  Serial1.begin(57600);
   //enable slave mode
   pinMode(3, OUTPUT);
   pinMode(5, OUTPUT);
@@ -42,7 +43,7 @@ void setup(){
   analogWrite(3, 210);
   
   //  SPI.attachInterrupt();
-  Serial.println("Serial Testing");
+  Serial1.println("Serial Testing");
 
 }
 
@@ -51,9 +52,9 @@ void loop(){
   cmdstr = "";
   val = 0;
   valstr = "";
-  while (Serial.available() > 0){
+  while (Serial1.available() > 0){
     
-    char c = Serial.read();
+    char c = Serial1.read();
     readString += c;
   }
 
@@ -64,48 +65,48 @@ void loop(){
     cmd = cmdstr.toInt();
     val = valstr.toInt();
 
-    Serial.println(cmd);
-    Serial.println(val);
+    Serial1.println(cmd);
+    Serial1.println(val);
 
     if(cmd == 0) {
-      Serial.println("STOP");
-      //  Serial.print(String(buf[1]));
-      Serial.println(val);
+      Serial1.println("STOP");
+      //  Serial1.print(String(buf[1]));
+      Serial1.println(val);
       analogWrite(10, 148);
       analogWrite(11, 176);
     }
     
     else if(cmd == 2) {
-      Serial.println("X");
-	//  Serial.print(String(buf[1]));
-      Serial.println(val);
+      Serial1.println("X");
+	//  Serial1.print(String(buf[1]));
+      Serial1.println(val);
       analogWrite(10, val);
     }
       
     else if(cmd ==1){
-      Serial.println("Y");
-      //  Serial.print(String(buf[1]));
-      Serial.println(val);
+      Serial1.println("Y");
+      //  Serial1.print(String(buf[1]));
+      Serial1.println(val);
       analogWrite(11, val);
     }
     else if(cmd == 3){
-      Serial.println("A button");
-      Serial.println(val);
+      Serial1.println("A button");
+      Serial1.println(val);
       analogWrite(3, val);
     }
     else if(cmd == 4){
-      Serial.println("X button");
-      Serial.println(val);
+      Serial1.println("X button");
+      Serial1.println(val);
       analogWrite(5, val);
     }
     else if(cmd == 5){
-      Serial.println("B button");
-      Serial.println(val);
+      Serial1.println("B button");
+      Serial1.println(val);
       analogWrite(6, val);
     }
     else if(cmd == 6){
-      Serial.println("Off");
-      Serial.println(val);
+      Serial1.println("Off");
+      Serial1.println(val);
       analogWrite(3, 0);
       analogWrite(5, 0);
       analogWrite(6, 0);
@@ -115,7 +116,7 @@ void loop(){
       analogWrite(11, 176);
     }
     
-    Serial.println();
+    Serial1.println();
     readString="";
   }
 }
