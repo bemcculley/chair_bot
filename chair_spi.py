@@ -11,11 +11,11 @@ adapted by Brian McCulley
 
 '''
 
-#import serial
+import serial
 import pygame
 import time
 
-import spi
+#import spi
 
 
 class ChairControl_Xbox(object):
@@ -25,8 +25,8 @@ class ChairControl_Xbox(object):
         
         self.xPin = 10
         self.yPin = 11
-
-        spi.openSPI(speed=1000000, mode=0)
+        sefl.ser = serial.Serial('/dev/USB0')
+#        spi.openSPI(speed=1000000, mode=0)
 
 
     def convertValueX(self, OldValue):
