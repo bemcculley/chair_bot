@@ -12,4 +12,11 @@ hostapd
 (for xbox controller)
 xboxdrv
 
+reqs:
+pip
+hostapd
+xboxdrv
+pygame
+
+
 Thanks to Louis Thiery and Connor Wolf for their python / c SPI adaptor.
