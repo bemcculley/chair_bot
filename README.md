@@ -16,7 +16,8 @@ reqs:
 pip
 hostapd
 xboxdrv
-pygame
+python-pygame
+python-serial
 
 
 Thanks to Louis Thiery and Connor Wolf for their python / c SPI adaptor.
