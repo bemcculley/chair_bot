@@ -16,8 +16,8 @@ import pygame
 import time
 import sys
 
-DEBUG_JOYSTICK_MOVEMENT = False
-DEBUG_BUTTON_ACTION = False
+DEBUG_JOYSTICK_MOVEMENT = True
+DEBUG_BUTTON_ACTION = True
 
 
 class SparkFunAVC_routine(object):
@@ -206,10 +206,12 @@ class ChairControl_Xbox(object):
                         elif thing.dict['button'] == 6:  # Select Button
                             if DEBUG_BUTTON_ACTION:
                                 print 'SELECT Button: depressed'
-#                        elif thing.dict['button'] == 7: # Start button
-#                            if DEBUG_BUTTON_ACTION:
-#                                print 'START Button: depressed'
-#                            self.handle_routine()
+                        elif thing.dict['button'] == 7: # Start button
+                            self.ser.write('0000\n')
+                            if DEBUG_BUTTON_ACTION:
+                                print 'START Button: depressed'
+                            time.sleep(5)
+                            #self.handle_routine()
 
                     # Buttons - Release
                     if thing.type == 11:
