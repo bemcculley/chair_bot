@@ -16,59 +16,16 @@ import pygame
 import time
 import sys
 
-DEBUG_JOYSTICK_MOVEMENT = False
-DEBUG_BUTTON_ACTION = False
-
-
-class SparkFunAVC_routine(object):
-    def __init__(self,ser):
-        self.ser = ser
-        
-    def turn_left(self):
-        self.ser.write('2128\n')
-        time.sleep(1.4)
-        self.ser.write('0000\n')
-
-    def turn_right(self):
-        self.ser.write('2168\n')
-        time.sleep(1.4)
-        self.ser.write('0000\n')
-
-    def move_forward(self, tim = 2):
-        self.ser.write('1240\n')
-        time.sleep(tim)
-        self.ser.write('0000\n')
-
-    def circle(self):
-        self.ser.write('1196\n')
-        time.sleep(0.5)
-        self.ser.write('2168\n')
-        time.sleep(6.4)
-        self.ser.write('0000\n')
-        
-    def run(self):
-        if not self.ser.isOpen():
-            self.ser.open()
-        self.move_forward(5)
-        self.turn_left()
-        self.turn_left()
-        self.move_forward(5)
-        self.turn_left()
-        self.turn_left()
-        self.ser.write('0000\n')
-        print "done!"
-
-    def __del__(self):
-        if self.ser.isOpen():
-            self.ser.write('0000\n')
-            self.ser.close()
+DEBUG_JOYSTICK_MOVEMENT = True
+DEBUG_BUTTON_ACTION = True
 
 class ChairControl_Xbox(object):
     def __init__(self):
         self.xDefault = 148
         self.yDefault = 176 
         self.ser = serial.Serial('/dev/ttyAMA0', baudrate=9600, timeout=0)
-        self.ser.open()
+        if not self.ser.isOpen():
+            self.ser.open()
         self.ser.write('0000\n')
         time.sleep(5)
         
@@ -114,24 +71,13 @@ class ChairControl_Xbox(object):
         j.init()
         print 'Initialized Joystick : %s' % j.get_name()
         self.ser.flushInput()
+        xOldVal = self.xDefault
+        yOldVal = self.yDefault
         try:
             while True:
                 pygame.event.pump()
                 event = pygame.event
-#                self.ser.write('9999\n')
-#                waits = self.ser.inWaiting()
-#                while waits >0:
-#                    print "ARDUINO OUTPUT FROM SERIAL: ", str(self.ser.readlines()).replace('\n','')
-#                    print"Waiting : %d " % waits
-#                time.sleep(1)
-#                self.ser.flushInput()
                 for thing in event.get():
-                    #if thing.type == 9: # DPAD
-                        # if thing.dict['value'][0] == 1:
-                        # elif thing.dict['value'][0] == -1:
-                        # elif thing.dict['value'][1] == 1:
-                        # elif thing.dict['value'][1] == -1:
-
                     if thing.type == 7: # Left and Right Joystick
                         #LEFT JOYSTICK
                         if thing.dict['axis'] == 0:
@@ -143,11 +89,14 @@ class ChairControl_Xbox(object):
                                 if DEBUG_JOYSTICK_MOVEMENT:
                                     print "LEFT JOYSTICK AXIS RIGHT"
 
+
                             xNewVal = self.convertValueX(val)
-                            try:
-                                self.ser.write('2'+str(xNewVal)+'\n')
-                            except Exception, e:
-                                print e
+                            if xNewVal >= (xOldVal + 5) or xNewVal <= (xOldVal - 5):
+                                try:
+                                    self.ser.write('2'+str(xNewVal)+'\n')
+                                    xOldVal = xNewVal
+                                except Exception, e:
+                                    print e
 
                         if thing.dict['axis'] == 1:
                             val = float(thing.dict['value']) # small, decimal between -1 and + 1
@@ -159,10 +108,12 @@ class ChairControl_Xbox(object):
                                     print "LEFT JOYSTICK AXIS BACK"
 
                             yNewVal = self.convertValueY(val)
-                            try:
-                                self.ser.write('1'+str(yNewVal)+'\n')
-                            except Exception, e:
-                                print e
+                            if yNewVal >= (yOldVal + 5) or yNewVal <= (yOldVal - 5):
+                                try:
+                                    self.ser.write('1'+str(yNewVal)+'\n')
+                                    yOldVal = yNewVal
+                                except Exception, e:
+                                    print e
 
 
                         # RIGHT JOYSTICK
@@ -205,10 +156,12 @@ class ChairControl_Xbox(object):
                         elif thing.dict['button'] == 6: # Select Button
                             if DEBUG_BUTTON_ACTION:
                                 print 'SELECT Button: depressed'
-#                        elif thing.dict['button'] == 7: # Start button
-#                            if DEBUG_BUTTON_ACTION:
-#                                print 'START Button: depressed'
-#                            self.handle_routine()
+                        elif thing.dict['button'] == 7: # Start button
+                            self.ser.write('0000\n')
+                            if DEBUG_BUTTON_ACTION:
+                                print 'START Button: depressed'
+                            time.sleep(5)
+                            #self.handle_routine()
 
                     #Buttons - Release
                     if thing.type == 11:
