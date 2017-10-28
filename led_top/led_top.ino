@@ -79,7 +79,7 @@ void handleColor() {
   if (server.arg("red") == "") {   //Parameter not found
     message = "red Argument not found";
   } else {
-    animate = 6;
+    animate = 12;
      //Parameter found
     red = constrain(server.arg("red").toInt(), 0, 255); //Gets the value of the query parameter
     message = "red Argument = ";
@@ -89,7 +89,7 @@ void handleColor() {
   if (server.arg("green") == "") {   //Parameter not found
     message += "green Argument not found";
   } else {
-    animate = 6;
+    animate = 12;
      //Parameter found
     green = constrain(server.arg("green").toInt(), 0, 255); //Gets the value of the query parameter
     message += "green Argument = ";
@@ -99,7 +99,7 @@ void handleColor() {
   if (server.arg("blue") == "") {   //Parameter not found
     message += "blue Argument not found";
   } else {
-    animate = 6;
+    animate = 12;
      //Parameter found
     blue = constrain(server.arg("blue").toInt(), 0, 255); //Gets the value of the query parameter
     message += "blue Argument = ";
@@ -140,7 +140,6 @@ void setup(void) {
   Serial.println(ip);
   IPAddress subnet(255, 255, 255, 0); 
   WiFi.config(ip, gateway, subnet);
-
   WiFi.begin(ssid, password);
   Serial.println("");
 
@@ -174,6 +173,7 @@ void setup(void) {
 
   server.begin();
   Serial.println("HTTP server started");
+  boot();
 }
 
 void loop(void) {
@@ -207,55 +207,52 @@ void loop(void) {
   if (mode == "on"){
     if (animate == 5){
       police(animate_wait);
-      }
+    }
   }
   if (mode == "on"){
     if (animate == 6){
+      police2(animate_wait);
+    }
+  }
+  if (mode == "on"){
+    if (animate == 7){
       for (uint16_t i = 0; i < strip.numPixels(); i++) {
         strip.setPixelColor(i, strip.Color(red, green, blue));
       }
       strip.show();
     }
   }
-}
-
-static void chase(uint32_t c) {
-  for(uint16_t i=0; i<strip.numPixels()+4; i++) {
-      strip.setPixelColor(i  , c); // Draw new pixel
-      strip.setPixelColor(i-4, 0); // Erase pixel a few steps back
-      strip.show();
-      delay(animate_wait);
-      server.handleClient();
-      if (mode == "off"){
-        break;
-      }
+  if (mode == "on"){
+    if (animate == 8){
+      peperHot(animate_wait);
+    }
+  }
+  if (mode == "on"){
+    if (animate == 9){
+      peperFlash();
+    }
+  }
+  if (mode == "on"){
+    if (animate == 10){
+      peperFlash();
+    }
+  }
+  if (mode == "on"){
+    if (animate == 11){
+      nightRider(strip.Color(255, 0, 0));
+    }
+  }
+  if (mode == "on"){
+    if (animate == 13){
+      fadeTest();
+    }
   }
 }
 
-static void police(uint32_t wait) {
-  for(uint16_t i=0; i < 40; i++) {
-    strip.setPixelColor(i, strip.Color(255, 0, 0));
-  }
-  for(uint16_t i=68; i < 108; i++) {
-    strip.setPixelColor(i, strip.Color(0, 0, 255));
-  }
-  strip.show();
-  delay(wait);
-  server.handleClient();
-  for(uint16_t i=0; i < 40; i++) {
-    strip.setPixelColor(i, strip.Color(0, 0, 255));
-  }
-  for(uint16_t i=68; i < 108; i++) {
-    strip.setPixelColor(i, strip.Color(255, 0, 0));
-  }
-  strip.show(); 
-  delay(wait);
-}
-
-// Slightly different, this makes the rainbow equally distributed throughout
 void rainbowCycle(uint8_t wait) {
+  // Generic Animation
+  // Animation ID 1
   uint16_t i, j;
-
   for(j=0; j<256*5; j++) { // 5 cycles of all colors on wheel
     for(i=0; i< strip.numPixels(); i++) {
       server.handleClient();
@@ -268,12 +265,12 @@ void rainbowCycle(uint8_t wait) {
         break;
       }
     strip.show();
-    delay(wait);
+    delay(wait); // @todo: make this a static var probably
   }
 }
 
 // Input a value 0 to 255 to get a color value.
-// The colours are a transition r - g - b - back to r.
+// The colours are a transition r - g  b - back to r.
 uint32_t Wheel(byte WheelPos) {
   WheelPos = 255 - WheelPos;
   if(WheelPos < 85) {
@@ -284,15 +281,243 @@ uint32_t Wheel(byte WheelPos) {
     return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
   }
   WheelPos -= 170;
-return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
+  return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
 }
 
+static void chase(uint32_t c) {
+  // Generic Animation
+  // Animation ID 2, 3 4
+  for(uint16_t i=0; i<strip.numPixels()+8; i++) {
+      strip.setPixelColor(i  , c); // Draw new pixel
+      strip.setPixelColor(i-8, 0); // Erase pixel a few steps back
+      strip.show();
+      delay(animate_wait);
+      server.handleClient();
+      if (mode == "off"){
+        break;
+      }
+  }
+}
 
+static void police(uint32_t wait) {
+  // Speciifc to the Robot Top Hat
+  // Animastion ID 5
+  server.handleClient();
+  for(uint16_t i=0; i < 40; i++) {
+    strip.setPixelColor(i, strip.Color(0, 0, 255));
+  }
+  for(uint16_t i=68; i < 108; i++) {
+    strip.setPixelColor(i, strip.Color(255, 0, 0));
+  }
+  strip.show();
+  delay(wait);
+  server.handleClient();
+  for(uint16_t i=0; i < 40; i++) {
+    strip.setPixelColor(i, strip.Color(255, 0, 0));
+  }
+  for(uint16_t i=68; i < 108; i++) {
+    strip.setPixelColor(i, strip.Color(0, 0, 255));
+  }
+  strip.show();
+  delay(wait);
+}
 
+static void police2(uint32_t wait) {
+  // Speciifc to the Robot Top Hat
+  // Animastion ID 6
+  for(uint16_t i=0; i < 40; i++) {
+    strip.setPixelColor(i, strip.Color(255, 0, 0));
+  }
+  for(uint16_t i=41; i < 68; i++) {
+    strip.setPixelColor(i, strip.Color(255, 255, 255));
+  }
+  for(uint16_t i=68; i < 108; i++) {
+    strip.setPixelColor(i, strip.Color(0, 0, 255));
+  }
+  for(uint16_t i=108; i < 136; i++) {
+    strip.setPixelColor(i, strip.Color(0, 0, 0));
+  }
 
+  strip.show();
+  delay(wait);
+  server.handleClient();
+  for(uint16_t i=0; i < 40; i++) {
+    strip.setPixelColor(i, strip.Color(0, 0, 255));
+  }
+  for(uint16_t i=41; i < 68; i++) {
+    strip.setPixelColor(i, strip.Color(0, 0, 0));
+  }
+  for(uint16_t i=68; i < 108; i++) {
+    strip.setPixelColor(i, strip.Color(255, 0, 0));
+  }
+  for(uint16_t i=108; i < 136; i++) {
+    strip.setPixelColor(i, strip.Color(255, 255, 255));
+  }
+  strip.show(); 
+  delay(wait);
+}
 
+void peperHot(uint8_t wait) {
+  // Animate 8
+  // ** NEW UNSTESTED **
+  uint16_t i, b;
+  for(i=0; i< strip.numPixels(); i++){
+    server.handleClient();
+    if (mode == "off"){
+      break;
+    }
+    strip.setPixelColor(i, strip.Color(0, 0, 0));
+  }
+  strip.show();
+  for(b=0; b < 256; b++){
+    for(i=0; i< strip.numPixels(); i++) {
+      server.handleClient();
+      if(mode == "off"){
+        break;
+      }
+      strip.setPixelColor(i, strip.Color(b, 0, 0));
+    }
+    strip.show();
+    delay(wait);
+  }
+  for(b=255; b > 0; b =b - 1){
+    for(i=0; i< strip.numPixels(); i++) {
+      server.handleClient();
+      if(mode == "off"){
+        break;
+      }
+      strip.setPixelColor(i, strip.Color(b, 0, 0));
+    }
+    strip.show();
+    delay(wait);
+  }
+}
 
+void peperFlash() {
+  // Animate 9
+  // ** NEW UNSTESTED **
+  uint16_t i;
+  for(i=0; i< strip.numPixels(); i++) {
+    server.handleClient();
+    if (mode == "off"){
+      break;
+    }
+    strip.setPixelColor(i, 0);
+  }
+  strip.show();
+  delay(5);
+  for(i=0; i< strip.numPixels(); i++) {
+    server.handleClient();
+    if (mode == "off"){
+      break;
+    }
+    strip.setPixelColor(i, strip.Color(255, 255, 255));
+  }
+  strip.show();
+  delay(5);
+}
 
+static void nightRider(uint32_t c) {
+  // Animate 11
+  // ** NEW UNSTESTED **
+  uint16_t i, b, x;
+  strip.setPixelColor(i, strip.Color(255, 0, 0));
+  for(uint16_t i=0; i < strip.numPixels() / 2; i++) {
+      b = (strip.numPixels() / 2) + i;
+      x = ((strip.numPixels() / 2) + 1) - i;
+      strip.setPixelColor(b, c); // Draw new pixel
+      strip.setPixelColor(x, c);
+      strip.setPixelColor(b - 4, 0); // Erase pixel a few steps back
+      strip.setPixelColor(x - 4, 0);
+      strip.show();
+      delay(10);
+      server.handleClient();
+      if (mode == "off"){
+        break;
+      }
+  }
+  for(uint16_t i=0; i < strip.numPixels() / 2; i++) {
+      b = 0 + i;
+      x = strip.numPixels() - i;
+      strip.setPixelColor(b, c); // Draw new pixel
+      strip.setPixelColor(x, c);
+      strip.setPixelColor(b - 4, 0); // Erase pixel a few steps back
+      strip.setPixelColor(x - 4, 0);
+      strip.show();
+      delay(10);
+      server.handleClient();
+      if (mode == "off"){
+        break;
+      }
+  }
+}
 
+static void fadeTest(){
+  // Animate 13
+  // ** NEW UNSTESTED **
+  int R = 0;
+  int G = 0;
+  int B = 0;
+  int i = 0;
+  int j = 0;
+  for(R && G && B; R < 126 && G < 126 && B; R++ && G++ && B++){
+    for(int i=0; i< strip.numPixels(); i++){
+      strip.setPixelColor(i, strip.Color(R, G, B));
+      strip.show();
+      delay(0);
+    }
+    server.handleClient();
+    if (mode == "off"){
+      break;
+    }
+    delay(1);
+  }
+  for(R && G && B; R >-1 && G >-1 && B >-1; R-- && G-- && B--){
+    for(j=0; j < strip.numPixels(); j++){
+      strip.setPixelColor(j, strip.Color(R, G, B));
+      strip.show();
+      delay(0);
+    }
+    server.handleClient();
+    if (mode == "off"){
+      break;
+    }
+    delay(1);
+  }
+}
 
+static void boot(){
+  // ** NEW UNSTESTED **
+  uint32_t color = strip.Color(0, 0, 0);
+  int i = 0;
+  int j = 0;
+  int rounds = 0;
+  for(rounds = 0; rounds < 10; rounds++){
+    for(i = 0; i < 150; i++){
+      color = strip.Color(i, i, i);
+      for(j = 0; j < strip.numPixels(); j++){
+        strip.setPixelColor(j, color);
+      }
+      strip.show();
+      server.handleClient();
+      if (mode == "off"){
+        break;
+      }
+      delay(10);
+    }
+    delay(100);
+    for(i = 150; i > 150; i--){
+      color = strip.Color(i, i, i);
+      for(j = strip.numPixels(); j > strip.numPixels(); j--){
+        strip.setPixelColor(j, color);
+      }
+      strip.show();
+      server.handleClient();
+      if (mode == "off"){
+        break;
+      }
+      delay(10);
+    }
+  }
 
+}
